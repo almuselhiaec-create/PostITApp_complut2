@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  server:
+    build: ./server
+    container_name: postit_server
+    env_file:
+      - ./server/.env
+    ports:
+      - "4001:3002"  # maps host port 4001 → container port 3002 (adjust to your server port)
+    restart: unless-stopped
+    networks:
+      - postit_network
+
+  client:
+    build: ./client
+    container_name: postit_client
+    env_file:
+      - ./client/.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    restart: unless-stopped
+    networks:
+      - postit_network
+
+networks:
+  postit_network:
+    driver: bridge
